@@ -85,8 +85,9 @@ void RunBenchmark(ResultDatabase &resultDB,
 {
     int npasses = op.getOptionInt("passes");
     size_t minGroupSize = 32;
-    size_t maxGroupSize = 512;
-    size_t globalWorkSize = 32768;  // 64 * maxGroupSize = 64 * 512;
+    size_t maxGroupSize = 1024;
+//    size_t globalWorkSize = 32768;  // 64 * maxGroupSize = 64 * 512;
+    size_t globalWorkSize = 64 * maxGroupSize;
     unsigned int memSize       = 64*1024*1024;  // 64MB buffer
     const long availMem = findAvailBytes();
     while (memSize*2 > availMem)
@@ -138,7 +139,8 @@ void RunBenchmark(ResultDatabase &resultDB,
     {
         // Run the kernel for each group size
         cout << "Running benchmarks, pass: " << p << "\n";
-        for (int threads=minGroupSize; threads<=maxGroupSize ; threads*=2)
+//        for (int threads=minGroupSize; threads<=maxGroupSize ; threads*=2)
+        for (int threads = minGroupSize; threads <= maxGroupSize; threads += 32)
         {
             const unsigned int blocks = globalWorkSize / threads;
             double bdwth;
